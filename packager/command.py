@@ -4,6 +4,11 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 class Command(object):
+    """Base class for the commands to run while packaging.
+
+    Provides a default implementation of the `do` method.
+
+    """
     def do(self):
         """do the command.
 

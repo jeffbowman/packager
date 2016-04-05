@@ -1,9 +1,17 @@
+from abc import ABCMeta, abstractmethod
 from command import Command
 import shutil
 import os
 import logging
 
 class File(Command):
+    """Base class for commands to handle file operations.
+
+    Should not be instantiated, rather use `Move` or `Copy` commands.
+
+    """
+    __metaclass__ = ABCMeta
+
     def __init__(self, opts):
         if not opts.has_key('source'):
             raise Exception('source tag must be provided in ', opts)
@@ -22,7 +30,34 @@ class File(Command):
         else:
             self.src_contents = None
 
+    @abstractmethod
+    def do(self):
+        pass
+
 class Move(File):
+    """Command to move files or directories.
+
+    Will recursively move a file or directory to a target location.
+
+    Required:
+      source
+      target
+
+    Optional:
+      contents
+
+    yaml example:
+    ---
+      - move:
+          source:
+            name: String
+            contents: [list of String]
+          target:
+            name: String
+
+    """
+
+
     def __init__(self, opts):
         super(Move, self).__init__(opts)
         if opts.has_key('execute'):
@@ -52,6 +87,29 @@ class Move(File):
             shutil.move(f, target)
 
 class Copy(File):
+    """Command to copy files or directories.
+
+    Will recursively copy a file or directory to a target location.
+
+    Required:
+      source
+      target
+
+    Optional:
+      contents
+
+    yaml example:
+    ---
+      - move:
+          source:
+            name: String
+            contents: [list of String]
+          target:
+            name: String
+
+    """
+
+
     def __init__(self, opts):
         super(Copy, self).__init__(opts)
         if opts.has_key('execute'):
